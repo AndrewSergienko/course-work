@@ -17,8 +17,9 @@ def create_table(cell_list):
     while i < len(render_list):
         if render_list[i] == 'true':
             render_list[i] = create_table_object(i, cell_list)
-            i += 1
-        else:
+        i += 1
+    for i, elem in enumerate(render_list):
+        if elem == 'false':
             del render_list[i]
     render_table(render_list)
 

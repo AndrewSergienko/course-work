@@ -182,9 +182,14 @@
             tableInfoArr.push([window.localStorage.getItem("console"), window.localStorage.getItem("web"), window.localStorage.getItem("latex")])
             return tableInfoArr
         }
-        eel.expose(js_returnBody)
-        function js_returnBody(){
-            return document.body.innerHTML
+        eel.expose(js_tableOut)
+        function js_tableOut(){
+            document.getElementById("tools-menu").style.display = "none"
+            for(let i = 0; i < window.tableArr.length; i++){
+                for(let j = 0; j < window.tableArr[i].length; j++){
+                    window.tableArr[i][j].childNodes[0].readOnly = "readonly"
+                }
+            }
         }
     </script>
 </head>

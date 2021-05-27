@@ -8,8 +8,8 @@ from models.ATable import ATable
 
 @implementer(IRender)
 class TableWeb(ATable):
-    def __init__(self, rows=None, columns=None, cell_list=None):
+    def __init__(self, rows, columns, cell_list):
         super(TableWeb, self).__init__(rows, columns, cell_list)
 
     def render(self):
-        html_text = defs.get_html()
+        eel.js_tableOut()

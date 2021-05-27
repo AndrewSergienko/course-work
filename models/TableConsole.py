@@ -16,7 +16,7 @@ class TableConsole(ATable):
             len_diff = (max_value - len(content))*(width//70)
             return " "*(len_spaces//2) + " " * (len_diff // 2) + content + " " * (len_diff - len_diff // 2) + " "*(len_spaces//2) + " "*((width//70)-1)
         else:
-            len_diff = (width//70)*len(content)-len(content)
+            len_diff = (width//70)*max_value-len(content)
             return " "*(len_spaces//2) + " " * (len_diff // 2) + content + " " * (len_diff - len_diff // 2) + " "*(len_spaces//2) + " "*((width//70)-1)
 
     def change_render_flag(self, cell, j):
