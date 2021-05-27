@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    <link href="css/templates.css" rel="stylesheet">
+    <link href="css/content.css" rel="stylesheet">
+    <script type="text/javascript" src="/eel.js"></script>
+    <script>
+        window.onload = function () {
+            window.resizeTo(800, 630);
+            createTable();
+        }
+        window.tableArr = []
+        window.multipleCell = []
+        function createTable() {
+            let rows = window.localStorage.getItem("rows")
+            let columns = window.localStorage.getItem("columns")
+            let tableHtml = document.getElementById("table")
+            for(let i = 0; i < rows; i++){
+                let rowArr = []
+                let row = document.createElement("tr")
+                row.classList.add("row")
+                for(let j = 0; j < columns; j++){
+                    let cell = document.createElement("td")
+                    cell.id = i + " " + j
+                    cell.innerHTML = "<textarea class='cell-input'></textarea>"
+                    cell.style.width = "70px"; cell.style.height = "40px"; cell.style.border = "solid 0.5px"; cell.style.padding = "5px 10px"
+                    rowArr.push(cell)
+                    row.appendChild(cell)
+                }
+                window.tableArr.push(rowArr)
+                tableHtml.appendChild(row)
+            }
+        }
+        function changeAlignEvent(side){
+            if(document.hasFocus() && document.activeElement !== document.body && document.activeElement.tagName === "TEXTAREA"){
+                let focused = document.activeElement;
+                switch (side){
+                    case "left":
+                        focused.style.textAlign = "left"
+                        break
+                    case "right":
+                        focused.style.textAlign = "right"
+                        break
+                    case "center":
+                        focused.style.textAlign = "center"
+                        break
+                }
+            }
+            else{
+                switch (side){
+                    case "left":
+                        changeAlignAll("left")
+                        break
+                    case "right":
+                        changeAlignAll("right")
+                        break
+                    case "center":
+                        changeAlignAll("center")
+                        break
+                }
+            }
+        }
+        function mergeCell(side){
+            if(document.hasFocus() && document.activeElement !== document.body && document.activeElement.tagName === "TEXTAREA"){
+                let focused = document.activeElement.parentElement;
+                var pos_i = parseInt(focused.id.split(" ")[0])
+                var pos_j = parseInt(focused.id.split(" ")[1])
+                switch (side){
+                    case "left":
+                        if(pos_j > 0){
+                            if(window.tableArr[pos_i][pos_j].style.height === window.tableArr[pos_i][pos_j-1].style.height)
+                            {
+                                mergeLR(pos_i, pos_j, "left")
+                            }
+                        }
+                        else alert("Комірки зліва не існує")
+                        break
+                    case "right":
+                        if(pos_j < window.tableArr.length-1){
+                            if(window.tableArr[pos_i][pos_j].style.height === window.tableArr[pos_i][pos_j+1].style.height)
+                            {
+                                mergeLR(pos_i, pos_j, "right")
+                            }
+                        }
+                        else alert("Комірки зправа не існує")
+                        break
+                    case "up":
+                        if(pos_i > 0){
+                            if(window.tableArr[pos_i][pos_j].style.width === window.tableArr[pos_i-1][pos_j].style.width)
+                            {
+                                hiddenDownCell(pos_i-1, pos_j)
+                            }
+                        }
+                        else alert("Комірки зверху не існує")
+                        break
+                    case "down":
+                        if(pos_i < window.tableArr.length-1){
+                            if(window.tableArr[pos_i][pos_j].style.width === window.tableArr[pos_i+1][pos_j].style.width)
+                            {
+                                hiddenDownCell(pos_i, pos_j)
+                            }
+                        }
+                        else alert("Комірки знизу не існує")
+                        break
+                }
+            }
+        }
+        function changeAlignAll(str){
+            for(let i = 0; i < window.tableArr.length; i++){
+                for(let j = 0; j < window.tableArr[i].length; j++) {
+                    window.tableArr[i][j].firstChild.style.textAlign = str
+                }
+            }
+        }
+        function hiddenDownCell(i, j){
+            let cell = window.tableArr[i][j]
+            // hidden cell
+            let h_cell
+            do{
+                h_cell = window.tableArr[++i][j]
+            }
+            while (cell === h_cell)
+
+            let h_cell_height = parseInt(h_cell.style.height+"".substring(h_cell.style.height.length-2))
+            h_cell.style.visibility = "hidden"
+            h_cell.getElementsByTagName("TEXTAREA").disabled = true;
+            cell.style.height = parseInt(cell.style.height+"".substring(h_cell_height.length-2)) + h_cell_height + "px"
+            do{
+                window.tableArr[i][j] = cell;
+            }
+            while (window.tableArr[++i][j] === h_cell)
+        }
+        function mergeLR(i, j, side){
+            // jr - індекс комірки, яка буде видалена
+            let jr
+            switch (side){
+                case "left":
+                    jr = j-1;
+                    break
+                case "right":
+                    jr = j+1
+                    break
+            }
+            let cell = window.tableArr[i][j]
+            let r_cell = window.tableArr[i][jr]
+            let r_cell_width = parseInt(r_cell.style.width+"".substring(r_cell.style.width.length-2))
+            r_cell.remove()
+            cell.style.width = parseInt(cell.style.width+"".substring(r_cell_width.length-2)) + r_cell_width + "px"
+            //window.tableArr[i][jr] = cell
+            for(let i = 0; i < window.tableArr.length; i++)
+            {
+                if(window.tableArr[i].indexOf(r_cell) !== -1){
+                    window.tableArr[i].splice(jr, 1)
+                    changeID(i, jr)
+                }
+            }
+        }
+        /* Змінює ід комірок в масив на -1 починаючи від елемента j в підмасиві i
+        Після об`єднання комірок, одна із об`єднаних комірок видаляється, і ід остальних стають на 1 більше ніж їхній індекс в масиві*/
+        function changeID(i, _j){
+            for(let j = _j; j < window.tableArr[i].length; j++){
+                window.tableArr[i][j].id = i + " " + j
+            }
+        }
+        eel.expose(js_returnTable)
+        function js_returnTable(){
+            let tableInfoArr = []
+            for(let i = 0; i < window.tableArr.length; i++){
+                let rowArr = []
+                for(let j = 0; j < window.tableArr[i].length; j++){
+                    let cell = window.tableArr[i][j]
+                    let textarea = cell.childNodes[0]
+                    let cellInfo = [cell.id, [cell.style.width, cell.style.height], textarea.style.textAlign, textarea.value]
+                    rowArr.push(cellInfo)
+                }
+                tableInfoArr.push(rowArr)
+            }
+            tableInfoArr.push([window.localStorage.getItem("console"), window.localStorage.getItem("web"), window.localStorage.getItem("latex")])
+            return tableInfoArr
+        }
+        eel.expose(js_returnBody)
+        function js_returnBody(){
+            return document.body.innerHTML
+        }
+    </script>
+</head>
+<body>
+    <div id="tools-menu">
+        <div id="align-tool">
+            <p>Вирівнювання</p>
+            <div id="align-tool-icons" class="tool-icons-container">
+                <button onmousedown="changeAlignEvent('left')"><i class="fas fa-align-left"></i></button>
+                <button onmousedown="changeAlignEvent('center')"><i class="fas fa-align-center"></i></button>
+                <button onmousedown="changeAlignEvent('right')"><i class="fas fa-align-right"></i></button>
+            </div>
+        </div>
+        <div id="merge-tool">
+            <p>Поєднання</p>
+            <div id="merge-tool-icons" class="tool-icons-container">
+                <button onmousedown="mergeCell('left')"><i class="fas fa-arrow-left"></i></button>
+                <button onmousedown="mergeCell('up')"><i class="fas fa-arrow-up"></i></button>
+                <button onmousedown="mergeCell('down')"><i class="fas fa-arrow-down"></i></button>
+                <button onmousedown="mergeCell('right')"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+        <!--<div id="split-tool">
+            <p>Ділення</p>
+            <div id="split-tool-icons" class="tool-icons-container">
+                <button><i class="fas fa-arrow-left"></i></button>
+                <button><i class="fas fa-arrow-up"></i></button>
+                <button><i class="fas fa-arrow-down"></i></button>
+                <button><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>-->
+        <a href="#" onclick="eel.py_get_list()" id="btn-render">Вивести</a>
+    </div>
+    <div id="table-container"><table id="table"></table></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</body>
+</html>
