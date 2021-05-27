@@ -11,16 +11,14 @@ def py_get_list():
 
 
 def create_table(cell_list):
-    render_list = cell_list[-1]
+    checked_list = cell_list[-1]
     del cell_list[-1]
     i = 0
-    while i < len(render_list):
-        if render_list[i] == 'true':
-            render_list[i] = create_table_object(i, cell_list)
+    render_list = []
+    for i, elem in enumerate(checked_list):
+        if elem == 'true':
+            render_list.append(create_table_object(i, cell_list))
         i += 1
-    for i, elem in enumerate(render_list):
-        if elem == 'false':
-            del render_list[i]
     render_table(render_list)
 
 

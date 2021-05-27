@@ -3,6 +3,8 @@ class Cell:
         self._id = cell_id
         self._width = int(width[:-2])
         self._height = int(height[:-2])
+        # Якщо комірка з`єднана з іншими по вертикалі, то алгоритм намагатиметься розділити контент...
+        # ... якщо в первий рядок не влізає
         if self._height > 40:
             self._content = [["", True] for _ in range(self._height//40)]
             if len(content) > 5:
@@ -38,3 +40,6 @@ class Cell:
     def content(self, i, j, value):
         self._content[i][j] = value
 
+    @property
+    def align(self):
+        return self._align
