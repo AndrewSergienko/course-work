@@ -2,6 +2,9 @@ from models.TableConsole import TableConsole
 from models.TableLatex import TableLatex
 from models.TableWeb import TableWeb
 
+from models.IRender import IRender
+from zope.interface.verify import verifyObject
+
 import eel
 
 
@@ -23,12 +26,16 @@ def create_table(cell_list):
 
 
 def create_table_object(index, cell_list):
+    obj = 0
     if index == 0:
-        return TableConsole(len(cell_list), max(cell_list, key=len), cell_list)
+        obj = TableConsole(len(cell_list), max(cell_list, key=len), cell_list)
     elif index == 1:
-        return TableWeb(len(cell_list), max(cell_list, key=len), cell_list)
+        obj = TableWeb(len(cell_list), max(cell_list, key=len), cell_list)
     elif index == 2:
-        return TableLatex(len(cell_list), max(cell_list, key=len), cell_list)
+        obj = TableLatex(len(cell_list), max(cell_list, key=len), cell_list)
+    # Перевірка, чи реалізує об`єкт інтерфейс IRender
+    if verifyObject(IRender, obj):
+        return obj
 
 
 def render_table(render_list):

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Генератор таблиць - редагування</title>
+    <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <link href="css/templates.css" rel="stylesheet">
@@ -151,7 +152,6 @@
             let r_cell_width = parseInt(r_cell.style.width+"".substring(r_cell.style.width.length-2))
             r_cell.remove()
             cell.style.width = parseInt(cell.style.width+"".substring(r_cell_width.length-2)) + r_cell_width + "px"
-            //window.tableArr[i][jr] = cell
             for(let i = 0; i < window.tableArr.length; i++)
             {
                 if(window.tableArr[i].indexOf(r_cell) !== -1){
@@ -180,17 +180,30 @@
                 }
                 tableInfoArr.push(rowArr)
             }
+            formate_table(tableInfoArr)
             tableInfoArr.push([window.localStorage.getItem("console"), window.localStorage.getItem("web"), window.localStorage.getItem("latex")])
             return tableInfoArr
         }
         eel.expose(js_tableOut)
         function js_tableOut(){
-            document.getElementById("tools-menu").style.display = "none"
-            for(let i = 0; i < window.tableArr.length; i++){
-                for(let j = 0; j < window.tableArr[i].length; j++){
-                    window.tableArr[i][j].childNodes[0].readOnly = "readonly"
+            window.open("webout.html", "_blank")
+        }
+        function formate_table(table){
+            let form_table = []
+            for(let i = 0; i < table.length; i++){
+                let row = []
+                for(let j = 0; j < table[i].length; j++) {
+                    row.push(table[i][j].slice())
                 }
+                form_table.push(row)
             }
+            for(let i = 0; i < form_table.length; i++){
+                for(let j = 0; j < form_table[i].length; j++){
+                    form_table[i][j].push('CL')
+                }
+                form_table[i].push('RW')
+            }
+            window.localStorage.setItem('table', form_table)
         }
     </script>
 </head>
