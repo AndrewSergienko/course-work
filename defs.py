@@ -1,10 +1,13 @@
 from models.TableConsole import TableConsole
 from models.TableLatex import TableLatex
 from models.TableWeb import TableWeb
+import sys
 
 from models.IRender import IRender
-from zope.interface.verify import verifyObject
 
+sys.path.insert(0, 'packages/')
+
+from zope.interface.verify import verifyObject
 import eel
 
 

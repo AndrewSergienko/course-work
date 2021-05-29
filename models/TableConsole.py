@@ -1,7 +1,10 @@
-from zope.interface import implementer
-
 from models.IRender import IRender
 from models.ATable import ATable
+import sys
+
+sys.path.insert(0, 'packages/')
+
+from zope.interface import implementer
 
 
 @implementer(IRender)

@@ -26,16 +26,29 @@
                 let row = document.createElement("tr")
                 row.classList.add("row")
                 for (let j = 0; j < table[i].length-1; j++) {
-                    let cell = document.createElement("td")
-                    cell.id = i + " " + j
-                    cell.style.width = table[i][j][2]; cell.style.height = table[i][j][3]; cell.style.border = "solid 0.5px"; cell.style.padding = "5px 10px"
-                    let textarea = document.createElement("textarea")
-                    textarea.classList.add("cell-input")
-                    textarea.value = table[i][j][5]
-                    textarea.style.textAlign = table[i][j][4]
-                    textarea.readOnly = "readonly"
-                    cell.appendChild(textarea)
-                    row.appendChild(cell)
+                        let cell = document.createElement("td")
+                        cell.id = i + " " + j
+                        let textarea = document.createElement("textarea")
+                        if(i !== parseInt(table[i][j][1].split(" ")[0]) || j !== parseInt(table[i][j][1].split(" ")[1])) {
+                            cell.style.width = "70px"
+                            cell.style.height = "40px"
+                            cell.style.visibility = "hidden"
+                            textarea.disabled = true
+                        }
+                        else{
+                            cell.style.width = table[i][j][2]
+                            cell.style.height = table[i][j][3]
+                        }
+                        cell.colSpan = parseInt(table[i][j][2]) / 70;
+                        cell.rowSpan = parseInt(table[i][j][3]) / 40;
+                        cell.style.border = "solid 0.5px";
+                        cell.style.padding = "5px 10px"
+                        textarea.classList.add("cell-input")
+                        textarea.value = table[i][j][5]
+                        textarea.style.textAlign = table[i][j][4]
+                        textarea.readOnly = "readonly"
+                        cell.appendChild(textarea)
+                        row.appendChild(cell)
                 }
                 tableHtml.appendChild(row)
             }

@@ -1,11 +1,11 @@
-from zope.interface import implementer
-import defs
-import eel
-
-from subprocess import call
-
 from models.IRender import IRender
 from models.ATable import ATable
+import sys
+
+sys.path.insert(0, 'packages/')
+
+import eel
+from zope.interface import implementer
 
 
 @implementer(IRender)
